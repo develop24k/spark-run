@@ -1,0 +1,48 @@
+{
+  "type": "record",
+  "name": "CustomerRecord",
+  "namespace": "com.example.avro",
+  "fields": [
+    { "name": "customerId", "type": "string" },
+    { "name": "firstName", "type": "string" },
+    { "name": "lastName", "type": "string" },
+    { "name": "email", "type": ["null", "string"], "default": null },
+    {
+      "name": "orders",
+      "type": {
+        "type": "array",
+        "items": {
+          "type": "record",
+          "name": "Order",
+          "fields": [
+            { "name": "orderId", "type": "string" },
+            {
+              "name": "orderTimestamp",
+              "type": {
+                "type": "long",
+                "logicalType": "timestamp-millis"
+              }
+            },
+            {
+              "name": "orderDetails",
+              "type": {
+                "type": "array",
+                "items": {
+                  "type": "record",
+                  "name": "OrderDetail",
+                  "fields": [
+                    { "name": "productId", "type": "string" },
+                    { "name": "productName", "type": "string" },
+                    { "name": "quantity", "type": "int" },
+                    { "name": "unitPrice", "type": "double" }
+                  ]
+                }
+              }
+            },
+            { "name": "orderTotal", "type": "double" }
+          ]
+        }
+      }
+    }
+  ]
+}
