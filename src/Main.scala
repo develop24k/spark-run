@@ -30,11 +30,16 @@ object Main {
 
     df2.show()
 
-    val dfOrders = df2.withColumn("order", explode(col("orders")))
+    val dfOrders = df2.withColumn("order", explode(col("orders"))).withColumn("details",explode(col("order.orderDetails"))).select("customerId","order.orderId","order.orderTotal","details.productId","details.quantity","details.unitPrice")
 
     dfOrders.show(false)
 
-    val dfItems = dfOrders.withColumn("item", explode(col("order.orderDetails")))
+
+    dfOrders.createOrReplaceTempView("OrderView")
+
+    spark.sql("select customerId,orderId,sum(quantity*unitPrice) from OrderView group by customerId,orderId order by customerId,orderId").show(false)
+
+   /*val dfItems = dfOrders.withColumn("item", explode(col("order.orderDetails")))
     dfItems.show(false)
     dfItems.printSchema()
 
@@ -55,9 +60,9 @@ object Main {
     flatDf.show(false)
 
 
-    df2.createOrReplaceTempView("myView")
+    df2.createOrReplaceTempView("myView")*/
 
-    spark.sql("SELECT\n  c.customerId,\n  c.firstName,\n  c.lastName,\n  c.email,\n  o.orderId,\n  o.orderTimestamp,\n  d.productId,\n  d.productName,\n  d.quantity,\n  d.unitPrice,\n  o.orderTotal\nFROM myView c\nLATERAL VIEW explode(c.orders) o AS o\nLATERAL VIEW explode(o.orderDetails) d AS d").show(true)
+    //spark.sql("SELECT\n  c.customerId,\n  c.firstName,\n  c.lastName,\n  c.email,\n  o.orderId,\n  o.orderTimestamp,\n  d.productId,\n  d.productName,\n  d.quantity,\n  d.unitPrice,\n  o.orderTotal\nFROM myView c\nLATERAL VIEW explode(c.orders) o AS o\nLATERAL VIEW explode(o.orderDetails) d AS d").show(true)
 
 
 
