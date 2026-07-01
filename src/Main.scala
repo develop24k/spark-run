@@ -30,7 +30,7 @@ object Main {
 
     df2.show()
 
-    val dfOrders = df2.withColumn("order", explode(col("orders"))).withColumn("details",explode(col("order.orderDetails"))).select("customerId","order.orderId","order.orderTotal","details.productId","details.quantity","details.unitPrice")
+    val dfOrders = df2.withColumn("orders", explode(col("orders"))).withColumn("details",explode(col("orders.orderDetails"))).select("customerId","orders.orderId","orders.orderTotal","details.productId","details.quantity","details.unitPrice")
 
     dfOrders.show(false)
 
